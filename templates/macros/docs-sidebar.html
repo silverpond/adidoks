@@ -1,26 +1,52 @@
 {% macro docs_sidebar(current_section) %}
-<div class="col-lg-5 col-xl-4 docs-sidebar">
+<div class="col-lg-4 col-xl-3 docs-sidebar">
 	<nav class="docs-links" aria-label="Main navigation">
 			{% set index_path = current_section ~ "/_index.md" | trim_start_matches(pat="/") %}
 			{% set index = get_section(path=index_path) %}
 			{% if index.pages %}
-					<h3>{{ index.title }}</h3>
-					<ul class="list-unstyled">
-					{% for page in index.pages %}                           
-							<li><a class="docs-link{% if current_url == page.permalink %} active{% endif %}" href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
-					{% endfor %}
-					</ul>
+					<div class="sidebar-section">
+						<h3 class="sidebar-header">{{ index.title }}</h3>
+						<ul class="list-unstyled sidebar-list">
+						{% for page in index.pages %}
+								<li><a class="docs-link{% if current_url == page.permalink %} active{% endif %}" href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
+						{% endfor %}
+						</ul>
+					</div>
 			{% endif %}
 			{% if index.subsections %}
 					{% for s in index.subsections %}
 					{% set subsection = get_section(path=s) %}
-					{% if subsection.pages %}
-							<h3>{{ subsection.title }}</h3>
-							<ul class="list-unstyled">
-							{% for page in subsection.pages %}                           
-									<li><a class="docs-link{% if current_url == page.permalink %} active{% endif %}" href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
-							{% endfor %}
-					</ul>
+					{% if subsection.pages or subsection.subsections %}
+							<div class="sidebar-section">
+								<h3 class="sidebar-header collapsible" data-target="section-{{ loop.index0 }}">
+									<span class="arrow">▼</span>
+									{{ subsection.title }}
+								</h3>
+								<ul class="list-unstyled sidebar-list" id="section-{{ loop.index0 }}">
+								{% for page in subsection.pages %}
+										<li><a class="docs-link{% if current_url == page.permalink %} active{% endif %}" href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
+								{% endfor %}
+								{% if subsection.subsections %}
+									{% for nested_s in subsection.subsections %}
+									{% set nested_subsection = get_section(path=nested_s) %}
+									{% if nested_subsection.pages %}
+										{% set outer_loop = loop.index0 %}
+										<li class="nested-subsection">
+											<h4 class="nested-header collapsible" data-target="nested-section-{{ outer_loop }}-{{ loop.index0 }}">
+												<span class="arrow">▼</span>
+												{{ nested_subsection.title }}
+											</h4>
+											<ul class="list-unstyled nested-list" id="nested-section-{{ outer_loop }}-{{ loop.index0 }}">
+											{% for nested_page in nested_subsection.pages %}
+												<li><a class="docs-link nested{% if current_url == nested_page.permalink %} active{% endif %}" href="{{ nested_page.permalink | safe }}">{{ nested_page.title }}</a></li>
+											{% endfor %}
+											</ul>
+										</li>
+									{% endif %}
+									{% endfor %}
+								{% endif %}
+								</ul>
+							</div>
 					{% endif %}
 					{% endfor %}
 			{% endif %}
