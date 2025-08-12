@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize sidebar state from localStorage
   const sidebarState = JSON.parse(localStorage.getItem('sidebarState') || '{}');
 
-  // Set up collapsible sections (main level)
+  // Set up collapsible sections (main and nested level)
   const collapsibleHeaders = document.querySelectorAll('.sidebar-header.collapsible, .nested-header.collapsible');
 
   collapsibleHeaders.forEach(header => {
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const targetList = document.getElementById(targetId);
 
     if (targetList) {
-      // Restore state from localStorage
-      const isCollapsed = sidebarState[targetId] === false; // default to expanded
+      // Restore state from localStorage (default to expanded)
+      const isCollapsed = sidebarState[targetId] === false;
 
       if (isCollapsed) {
         header.classList.add('collapsed');
@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Add click handler
-      header.addEventListener('click', function() {
+      header.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const isCurrentlyCollapsed = header.classList.contains('collapsed');
 
         if (isCurrentlyCollapsed) {
