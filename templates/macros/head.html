@@ -6,6 +6,19 @@
 
 {% macro stylesheet() %}
 <link rel="stylesheet" href="{{ get_url(path="main.css") | safe }}">
+<style>
+  /* Prevent FOUC by applying dark styles immediately for system dark preference */
+  @media (prefers-color-scheme: dark) {
+    html:not(.light) {
+      background: #212529;
+      color: #dee2e6;
+    }
+    html:not(.light) body {
+      background: #212529;
+      color: #dee2e6;
+    }
+  }
+</style>
 {% endmacro %}
 
 

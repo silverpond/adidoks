@@ -1,16 +1,29 @@
 // Set darkmode
 document.getElementById('mode').addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark');
 
-    document.body.classList.toggle('dark');
-    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-  
+    if (isDark) {
+        // Switch to light mode
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        document.body.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    } else {
+        // Switch to dark mode
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    }
 });
-  
+
 // enforce local storage setting but also fallback to user-agent preferences
+// (Note: Early script in base.html handles most cases, this is for fallback)
 if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-  
+  document.documentElement.classList.add('dark');
   document.body.classList.add('dark');
-  
+} else if (localStorage.getItem('theme') === 'light') {
+  document.documentElement.classList.add('light');
 }
 
 // Sidebar collapsible functionality

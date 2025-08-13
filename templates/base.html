@@ -15,6 +15,24 @@
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Prevent FOUC - must be as early as possible -->
+<script>
+  (function() {
+    'use strict';
+    try {
+      const theme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (theme === 'dark' || (!theme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else if (theme === 'light') {
+        document.documentElement.classList.add('light');
+      }
+    } catch (e) {
+      // Fallback for environments without localStorage or matchMedia
+    }
+  })();
+</script>
 {{ macros_head::resource() }}
 {{ macros_head::stylesheet() }}
 
