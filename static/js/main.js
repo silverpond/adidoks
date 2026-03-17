@@ -99,4 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Auto-expand sections containing active links after all sections are initialized
   autoExpandActiveSection();
+
+  // Code block copy buttons
+  document.querySelectorAll('pre > code').forEach(codeEl => {
+    const pre = codeEl.parentElement;
+
+    const btn = document.createElement('button');
+    btn.classList.add('btn-clipboard', 'copy-status');
+    btn.setAttribute('aria-label', 'Copy to clipboard');
+
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('doks-clipboard');
+    wrapper.appendChild(btn);
+    pre.parentNode.insertBefore(wrapper, pre);
+
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeEl.textContent).then(() => {
+        btn.focus();
+        setTimeout(() => btn.blur(), 2000);
+      });
+    });
+  });
 });
