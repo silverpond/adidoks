@@ -76,6 +76,7 @@ Source:
     var value = this.value.trim();
     var options = {
       bool: "OR",
+      expand: true,
       fields: {
         title: {boost: 2},
         body: {boost: 1},
